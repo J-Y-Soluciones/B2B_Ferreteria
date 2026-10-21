@@ -43,8 +43,12 @@ async function seed() {
   const hasher = new Argon2PasswordHasher();
 
   // Hash de contraseñas
-  const superadminPasswordHash = await hasher.hash("AdminSuper2026!");
-  const defaultTenantPasswordHash = await hasher.hash("password123");
+  const rawSuperadminPassword =
+    process.env.SEED_SUPERADMIN_PASSWORD || "AdminSuper2026!";
+  const rawTenantPassword = process.env.SEED_TENANT_PASSWORD || "password123";
+
+  const superadminPasswordHash = await hasher.hash(rawSuperadminPassword);
+  const defaultTenantPasswordHash = await hasher.hash(rawTenantPassword);
 
   console.log("🔄 Iniciando sembrado determinista con Superadmin y Tenants...");
 
@@ -608,7 +612,7 @@ async function seed() {
 
     console.log("✅ Seed completado con éxito:");
     console.log(
-      "   - Superadmin creado: admin@jysoluciones.pe (Pass: AdminSuper2026!)",
+      `   - Superadmin creado: admin@jysoluciones.pe (Pass: ${process.env.SEED_SUPERADMIN_PASSWORD ? "****** (desde .env)" : "AdminSuper2026!"})`,
     );
     console.log("   - 3 Tenants listos con estados: ACTIVE, TRIAL, SUSPENDED");
     console.log(
