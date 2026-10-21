@@ -6,13 +6,13 @@ COPY package.json pnpm-lock.yaml tsconfig.json ./
 
 # Etapa 2: Compilación de TypeScript
 FROM base AS builder
-RUN pnpm install --frozen-lockfile
+RUN pnpm config set strict-dep-builds false && pnpm install --prod --frozen-lockfile
 COPY src/ ./src
 RUN pnpm build
 
 # Etapa 3: Dependencias de producción puras
 FROM base AS prod-deps
-RUN pnpm install --prod --frozen-lockfile
+RUN pnpm config set strict-dep-builds false && pnpm install --frozen-lockfile
 
 # Etapa 4: Contenedor final seguro para Producción
 FROM node:22-alpine AS runner
